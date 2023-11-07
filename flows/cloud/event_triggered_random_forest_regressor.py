@@ -46,15 +46,13 @@ class TaxiFarePrediction(FlowSpec):
         # In practice, you want split time series data in more sophisticated ways and run backtests.
         self.X = self.df["trip_distance"].values.reshape(-1, 1)
         self.y = self.df["total_amount"].values
-        self.next(self.linear_model)
+        self.next(self.rf_regressor_model)
 
     @step
-    def linear_model(self):
-        "Fit a single variable, linear model to the data."
-        from sklearn.linear_model import LinearRegression
-
-        # TODO: Play around with the model if you are feeling it.
-        self.model = LinearRegression()
+    def rf_regressor_model(self):
+        "Fit a RandomForestRegressor to the data."
+        from sklearn.ensemble import RandomForestRegressor
+        self.model = RandomForestRegressor(max_depth=2, random_state=0)
         self.next(self.validate)
 
     def gather_sibling_flow_run_results(self):
